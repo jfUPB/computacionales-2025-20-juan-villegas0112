@@ -64,3 +64,26 @@ Cuando entendi que la utilizacion de la M era para almacenar en la memoria y no 
 Pensando en la próxima unidad, ¿Qué harás diferente en tu proceso de estudio para aprender de manera más efectiva?
 
 copiare un poco mas en mis apuntes para entender mejor la esturctura a la hora de trabajar en la casa.
+
+
+### Actividad 07
+
+Continuar: ¿Qué aspecto de las actividades, las explicaciones o la dinámica de la clase te ha resultado más útil o te ha gustado más y debería seguir haciendo?
+
+Me parece que las activudades guiadas deben continuar, pues se explica paso a paso cada una de las cosas que se van a ver en las actividades siguientes.
+
+Dejar de hacer: ¿Qué aspecto de la unidad te ha resultado confuso, poco útil o frustrante? ¿Hay algo que crees que debería eliminar o cambiar drásticamente?
+
+Creo que a la hora de dar la orden de trabajar en casa debe ser un poco mas precisa, porque en esta unidad me pasó que se dijo intenten hcaer esto en su casa y como no estaba entendiendo mucho no lo hice y resulto que a la siguiente clase no habia timepo para terminar esa actividad.
+
+Empezar a hacer: ¿Qué te habría gustado que hiciéramos que no hicimos? ¿Tienes alguna idea para una actividad o un recurso que podría mejorar el aprendizaje en la próxima unidad?
+
+Me parecio que todo cumpplio con lop que se deberia hacer.
+
+Ritmo y Dificultad: en una escala del 1 (muy fácil/lento) al 5 (muy difícil/rápido), ¿Cómo calificarías el ritmo y la dificultad general de esta unidad? ¿Por qué?
+
+4, porque si hubo bastante contenido, pero fue muy bien explicado y con buen tiempo.
+
+Comentario Adicional: ¿Hay algo más que te gustaría compartir sobre tu experiencia de aprendizaje en esta unidad?
+
+No.
