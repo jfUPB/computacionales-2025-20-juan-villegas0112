@@ -162,4 +162,19 @@ for(int i = 1; i <=100; i++){
 Estos codigos son lo mismo pues ambos bucan generar una suma de numeros que no sean mayor a 100, es decir, cuando el contenido de i sea mayor a 0 el codigo va a terminar de agregar numeros a su contador.
 
 
+### Actividad 05
+
+🪺***Punteros***🪺
+
+Declarar la variable: ``` int a = 10; ```
+
+Declarar el puntero: ```int* p; ```
+
+Guardar en el puntero la direccion: ``` p = &a; ```
+
+Leer con el puntero: ```int j = *ptr; ```
+
+Escribir con el puntero: ``` *ptr = 25; ```
+
+
 
