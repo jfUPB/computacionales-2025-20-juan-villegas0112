@@ -8,7 +8,7 @@
 
 Al ver la instruccion se puede inferir que se debe guardar un valor en una posicion especifica de la memoria, el valor o numero debe corresponder al color que muestra en la instruccion, es decir, el negro. Ademas la posicion en la memoria debe ser la del inicio de la pantalla.
 
-🪚***Ejecuta***🪚
+🦧***Ejecuta***🦧
 
 <img width="332" height="102" alt="image" src="https://github.com/user-attachments/assets/f96189d6-74af-4042-9d43-c40c363d92bc" />
 
@@ -19,7 +19,7 @@ c++
 screen = 1 // Supuesto: el compilador asigne la variable screen a la posicion de memoria? ---> 16384
 ````
 
-🫐***Reflexiona***🫐
+🦖***Reflexiona***🦖
 
 Esta actividad ayuda a comprender como puede funcionar los puestos o lugares en la memoria, dando a entender que de cierta forma cada posicion puede generar algo en especifico en la pantalla, como puede ser ubicar un pu to en el extremo de la pantalla. 
 
@@ -30,7 +30,7 @@ Esta actividad ayuda a comprender como puede funcionar los puestos o lugares en 
 
 Para esta actividad se debe comprender el codigo binario, donde cada linea contiene 16 bits con 1 y 0, al usar los 16 bits es necesario poner un -1 y asi llegar a la utilizacion de los 16 bits que contiene la instruccion. 
 
-🪚***Ejecuta***🪚
+🦧***Ejecuta***🦧
 
 <img width="327" height="74" alt="image" src="https://github.com/user-attachments/assets/c65f2e08-14c4-4800-8f5c-b930c6e3b4bd" />
 
@@ -43,7 +43,7 @@ screen = -1; //forzar al compilador para que asigne la variable screen a la dire
 screen = 0xFFFF;
 ```
 
-🫐***Reflexiona***🫐
+🦖***Reflexiona***🦖
 
 Para la realizacion de esta actividad se teneia que entender el codigo binario, cosa que la verdad si fue muy util, pues es esencial entender como funcionan los computadores en su interior y ver como la ubicacion de los 1 y 0.
 
@@ -56,7 +56,7 @@ Para la realizacion de esta actividad se teneia que entender el codigo binario, 
 
 Para la realizacion de esta actividad es necesario desglosar bien las indicaciones dadas, empezando por la finalodad que tiene el codigo y luego ir probando cada paso que se hace para ver si en realidad funciona.
 
-🪚***Ejecuta***🪚
+🦧***Ejecuta***🦧
 
 ```asm
 @i
@@ -119,44 +119,47 @@ M=-1
 0;JMP
 ```
 
-🫐***Reflexiona***🫐
+🦖***Reflexiona***🦖
 
 La realizacion de esta actividad fue muy interesante, porque entendi mejor la manera de como hacer y realizar los codigos de forma estructurada, ademas que comprendi la utilizacion del 0;jmp y el D;jeq, uno salta hasta el inicio y el otro hasta una ubicacion exacta para repetir el proceso.
 
 
 ### Actividad 04
 
+``` c++
+//Adds 1+...+100.
+int sum=0;
+for(int i = 1; i <=100; i++){
+   sum+= i;
+}
+```
+```asm
+// Adds1+...+100.
+ @i // i refers to some memory location.
+ M=1 // i=1
+ @sum // sum refers to some memory location.
+ M=0 // sum=0
+ (LOOP)
+ @i
+ D=M // D=i
+ @100
+ D=D-A // D=i-100
+ @END
+ D;JGT // If(i-100)>0 gotoEND
+ @i
+ D=M // D=i
+ @sum
+ M=D+M // sum=sum+i
+ @i
+ M=M+1 // i=i+1
+ @LOOP
+ 0;JMP // GotoLOOP
+ (END)
+ @END
+ 0;JMP // Infinite loop
+```
 
-@sum
-M=0        // sum = 0
+Estos codigos son lo mismo pues ambos bucan generar una suma de numeros que no sean mayor a 100, es decir, cuando el contenido de i sea mayor a 0 el codigo va a terminar de agregar numeros a su contador.
 
-@i
-M=1        // i = 1
-
-(LOOP)
-  @i
-  D=M      // D = i
-  @100
-  D=D-A    // D = i - 100
-  @END
-  D;JGT    // if(i > 100) goto END
-
-  // sum = sum + i
-  @i
-  D=M
-  @sum
-  M=D+M
-
-  // i++
-  @i
-  M=M+1
-
-  @LOOP
-  0;JMP    // goto LOOP
-
-(END)
-  @END
-  0;JMP    // infinite loop
-´´´ 
 
 
