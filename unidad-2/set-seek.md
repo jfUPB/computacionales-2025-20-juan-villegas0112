@@ -176,5 +176,31 @@ Leer con el puntero: ```int j = *ptr; ```
 
 Escribir con el puntero: ``` *ptr = 25; ```
 
+🪤***Predice***🪤
+PAra la realizacion de este ejercicio se debe lograr el cambio del valor de una variable a traves de la utilizacion de un puntero, para hacer esto hay que seguir los pasos de: declaracion de variable, declaracion del puntero, darle al puntero la direccion de la variable, leer el puntero y luesgo sobre escribir la varaible usando el puntero.
+
+🦧***Ejecuta***🦧
+
+```asm
+//declarar la variable a (paso 1)
+@10
+D=A
+@a
+M=D
+
+//declarar punterlo y darle direccion (paso 2 y 3)
+@a
+D=A 
+@p
+M=D
+
+//cambiar el valor de a a traves de p (paso 4)
+@p
+A=M
+M=D
+``` 
+
+🦖***Reflexiona***🦖
+
 
 
