@@ -124,6 +124,8 @@ M=-1
 La realizacion de esta actividad fue muy interesante, porque entendi mejor la manera de como hacer y realizar los codigos de forma estructurada, ademas que comprendi la utilizacion del 0;jmp y el D;jeq, uno salta hasta el inicio y el otro hasta una ubicacion exacta para repetir el proceso.
 
 
+### Actividad 04
+
 
 
 
