@@ -199,6 +199,30 @@ M=D
 A=M
 M=D
 ``` 
+``` asm
+//declarar la variable a (paso 1)
+@10
+D=A
+@a
+M=D
+
+//declarar la variable b (paso 1)
+@5
+D=A
+@b
+M=D
+
+//declarar punterlo y darle direccion (paso 2 y 3)
+@a
+D=A 
+@p
+M=D
+
+//cambiar el valor de a atraves de p (paso 4)
+@b
+A=M
+M=D
+```
 
 🦖***Reflexiona***🦖
 
