@@ -127,5 +127,36 @@ La realizacion de esta actividad fue muy interesante, porque entendi mejor la ma
 ### Actividad 04
 
 
+@sum
+M=0        // sum = 0
+
+@i
+M=1        // i = 1
+
+(LOOP)
+  @i
+  D=M      // D = i
+  @100
+  D=D-A    // D = i - 100
+  @END
+  D;JGT    // if(i > 100) goto END
+
+  // sum = sum + i
+  @i
+  D=M
+  @sum
+  M=D+M
+
+  // i++
+  @i
+  M=M+1
+
+  @LOOP
+  0;JMP    // goto LOOP
+
+(END)
+  @END
+  0;JMP    // infinite loop
+´´´ 
 
 
