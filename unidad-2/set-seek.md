@@ -177,9 +177,16 @@ Leer con el puntero: ```int j = *ptr; ```
 Escribir con el puntero: ``` *ptr = 25; ```
 
 🪤***Predice***🪤
-PAra la realizacion de este ejercicio se debe lograr el cambio del valor de una variable a traves de la utilizacion de un puntero, para hacer esto hay que seguir los pasos de: declaracion de variable, declaracion del puntero, darle al puntero la direccion de la variable, leer el puntero y luesgo sobre escribir la varaible usando el puntero.
+Para la realizacion de este ejercicio se debe lograr el cambio del valor de una variable a traves de la utilizacion de un puntero, para hacer esto hay que seguir los pasos de: declaracion de variable, declaracion del puntero, darle al puntero la direccion de la variable, leer el puntero y luesgo sobre escribir la varaible usando el puntero.
 
 🦧***Ejecuta***🦧
+
+``` c++
+int a = 10;
+int* p;
+p = &a;
+*p = 20;
+```
 
 ```asm
 //declarar la variable a (paso 1)
@@ -199,6 +206,15 @@ M=D
 A=M
 M=D
 ``` 
+
+``` c++
+int a = 10;
+int b = 5;
+int *p;
+p = &a;
+b = *p;
+```
+
 ``` asm
 //declarar la variable a (paso 1)
 @10
@@ -218,13 +234,17 @@ D=A
 @p
 M=D
 
-//cambiar el valor de a atraves de p (paso 4)
+//cambiar el valor de b atraves de p (paso 4)
+@p
+A=M    
+D=M  
 @b
-A=M
-M=D
+M=D   
 ```
 
+
 🦖***Reflexiona***🦖
+Durante la elaboracion de esta actividad entendi la funcionalidad de los punteros, ademas de repasar temas anteriormente vistos que son fundamentales para el entendimiento del codigo en esamblador.
 
 
 
