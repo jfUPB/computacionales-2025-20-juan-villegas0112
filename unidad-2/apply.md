@@ -106,7 +106,7 @@ D;JLT     // si p < 26, saltar a LOOP
 0;JMP
 
 ```
-Algunas correciones:
+Algunas revisiones:
 1. Al declarar los valores de las posiciones 16-25 hice una revision para ver si los valores funcionaban
 2. Busque en la posicion 0 el recorrido hecho con el puntero
 3. Luego revise si se almacenaba la suma en la direccion correcta 1
@@ -114,4 +114,5 @@ Algunas correciones:
 
 🦖Reflexiona🦖
 La realizacion de este ejercicio fue un poco compleja de entender, pues la utilizacion del puntero combinado con un bucle me parecio complejo, pero cuando comence a entender que simplemente debia ver la el arr como una variable que tiene diferentes valores y que el puntero debe ayudar a identificar que valor darle a esa variable se me hizo un poco mas sencillo de entender, de igual manera al basarme en un ejemplo que vimos en clase entendi que el puntero funcionaba como la i y que debia sumarle a este para que cambiara de posicion. En resumen el ejercicio me parecio complejo al principio, pero mientras iba avanzando entendia de una mejor manera la funcio que le podia dar al puntero. 
+
 
