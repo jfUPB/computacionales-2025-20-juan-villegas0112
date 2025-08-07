@@ -116,3 +116,4 @@ Algunas revisiones:
 La realizacion de este ejercicio fue un poco compleja de entender, pues la utilizacion del puntero combinado con un bucle me parecio complejo, pero cuando comence a entender que simplemente debia ver la el arr como una variable que tiene diferentes valores y que el puntero debe ayudar a identificar que valor darle a esa variable se me hizo un poco mas sencillo de entender, de igual manera al basarme en un ejemplo que vimos en clase entendi que el puntero funcionaba como la i y que debia sumarle a este para que cambiara de posicion. En resumen el ejercicio me parecio complejo al principio, pero mientras iba avanzando entendia de una mejor manera la funcio que le podia dar al puntero. 
 
 
+
