@@ -49,7 +49,7 @@ Ver como todas las variables localaes se van definiendo mediante el programa se 
 ### Actividad 01
 
 🥸***Predice***🥸
-
+Esta actividad permitira ver como es la utilizacion de punteros dentro de un codigo en c++
 
 🦕***Ejecuta***🦕
 
@@ -119,5 +119,6 @@ Usando esa dirección, puede cambiarlo en su lugar real.
 🎰***Reflexiona**🎰
 
 Esta actividad permite entender de buena forma el funcionamiento de las diferentes fucniones que hey en el codigo, permitiendo ver como se pueden realizar cambios dentro de una variable de forma permanente o solo para la utilizacion momentanea.
+
 
 
