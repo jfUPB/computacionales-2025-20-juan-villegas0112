@@ -53,8 +53,71 @@ Ver como todas las variables localaes se van definiendo mediante el programa se 
 
 🦕***Ejecuta***🦕
 
-- al usar el cout se imprime un mensaje 
+- al usar el cout se imprime un mensaje
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+void swapPorValor(int a, int b)
+{
+    int cambio = b;
+    b = a;
+    a = cambio;
+}
+
+void swapPorReferencia(int& a, int& b)
+{
+    int cambio = b;
+    b = a;
+    a = cambio;
+}
+
+void swapPorPuntero(int* a, int* b)
+{
+    int cambio = *b;
+    *b = *a;
+    *a = cambio;
+}
+
+int main() {
+    int a = 12;
+    int b = 15;
+
+    cout << "Valor inicial de a: " << a << endl;
+    cout << "Valor inicial de b: " << b << endl;
+
+    cout << "\nLlamando a swapPorValor..." << endl;
+    swapPorValor(a, b);
+    cout << "Despues de swapPorValor, valor de a, b: " << a << ", " << b << endl;
+
+    cout << "\nLlamando a swapPorReferencia..." << endl;
+    swapPorReferencia(a, b);
+    cout << "Despues de swapPorReferencia, valor de a, b: " << a << ", " << b << endl;
+
+    cout << "\nLlamando a swapPorPuntero..." << endl;
+    swapPorPuntero(&a, &b);
+    cout << "Despues de swapPorPuntero, valor de a, b: " << a << ", " << b << endl;
+
+    return 0;
+}
+```
+ ¿Por qué pasa?
+Paso por (a):
+La función recibe un tipo de copia del valor.
+Si la copia cambia, el original no.
+
+Paso por (b):
+La función recibe un acceso directo al original.
+Cualquier cambio dentro se ve afuera.
+
+Paso por (c):
+La función recibe la dirección del original.
+Usando esa dirección, puede cambiarlo en su lugar real.
 
 🎰***Reflexiona**🎰
+
+Esta actividad permite entender de buena forma el funcionamiento de las diferentes fucniones que hey en el codigo, permitiendo ver como se pueden realizar cambios dentro de una variable de forma permanente o solo para la utilizacion momentanea.
 
 
