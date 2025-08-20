@@ -5,11 +5,11 @@
 
 ### Actividad integradora de aplicación
 
-***1. Diagnóstico del problema (análisis):***
+***🪼1. Diagnóstico del problema (análisis):🪼***
 
 Cada vez que se crea un Personaje, se crea reserva memoria en el heap para guardar las estadísticas (new int[3]). Esa memoria no se libera en ningun momento porque no hay un metodo contructor, generando un gasta cada vez mas grande de memoria Ram. Por otro lado hay un error en simularEncuentro() pues Al ejecutar ```Personaje copiaHeroe = heroe;```, el compilador realiza una copia identica de los atributos. Esto significa que heroe como copiaHeroe apuntan al mismo sitio de memoria en el heap.
 
-***2. Solución y refactorización (síntesis y creación):***
+***🐛2. Solución y refactorización (síntesis y creación):🐛***
 
 ``` c++
 #include <string>
@@ -56,7 +56,7 @@ heroe.imprimir();
 return 0;
 }
 ```
-***3. Justificación de la Solución:***
+***🍿3. Justificación de la Solución:🍿***
 
 *- Eliminación de punteros dinámicos*
 
@@ -73,5 +73,6 @@ Ahora: cada objeto copia sus propios datos, evitando inconsistencias.
 *- Lista de inicialización en el constructor*
 
 Mejora la eficiencia al inicializar directamente las variables.
+
 
 
