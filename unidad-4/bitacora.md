@@ -25,6 +25,9 @@ void draw(); diburjo con las variables que se estan acutializando
 
 ***main.cpp:***
 
+
+
+
 ## Código
 
 Código para ofApp.h:
@@ -50,4 +53,5 @@ main.cpp
 ## Demostración:
 
 [Aquí está el video demostrativo de mi aplicación](url del video no listado en youtube)
+
 
