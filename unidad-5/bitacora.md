@@ -30,12 +30,12 @@ Señala una línea de código que sea un ejemplo claro de encapsulamiento y expl
         protected set { nombre = value; }
     }
 ```
-Porque hace que el atributo nombre sea privado y queno se tenga un acceso directo, pero luego en el metodo Nombre permite mediante un proceso de get set que se pueda leer y modificar de forma protegida dentro de las clases que hereden a esta.
+🦜 Porque hace que el atributo nombre sea privado y queno se tenga un acceso directo, pero luego en el metodo Nombre permite mediante un proceso de get set que se pueda leer y modificar de forma protegida dentro de las clases que hereden a esta.
 
 
 ¿Por qué crees que el campo nombre es private pero la propiedad Nombre es public? ¿Qué problema se evita con esto?
 
-Ademas de prevenir errores, esto hace como ya lo habia mencionado que solo la clase Figura tenga acceso directo para cmabiar el atributo nombre, esto permite que haya un constructor para las clases que herenden este metodo y que el nombre no tenga un valor no deseado.
+🦜 Ademas de prevenir errores, esto hace como ya lo habia mencionado que solo la clase Figura tenga acceso directo para cmabiar el atributo nombre, esto permite que haya un constructor para las clases que herenden este metodo y que el nombre no tenga un valor no deseado.
 
 **Herencia:**
 
@@ -46,6 +46,7 @@ public class Circulo : Figura
 ```
 Un objeto de tipo Circulo, además de Radio, ¿Qué otros datos almacena en su interior gracias a la herencia?
 
+🦜.
 - nombre.
 
 - Nombre, que expone el valor del nombre.
@@ -65,11 +66,7 @@ El constructor de Figura:
 
 Observa el bucle foreach. La variable fig es de tipo Figura, pero a veces contiene un Circulo y otras un Rectangulo. Cuando se llama a fig.Dibujar(), el programa ejecuta la versión correcta. En tu opinión, ¿Cómo crees que funciona esto “por debajo”? No necesitas saber la respuesta correcta, solo quiero que intentes razonar cómo podría ser.
 
-Esto sucede porque el bucle for eache, por mas que contanga la variable fig que es de tipo Figura, este debe analizar que figura debe genenrar para poder realizar el metodo de dibujar correspondiente a cada una de las clases establecidas que cuentan con la eherencia de Figura.
-
-
-
-
+🦜 Esto sucede porque el bucle for eache, por mas que contanga la variable fig que es de tipo Figura, este debe analizar que figura debe genenrar para poder realizar el metodo de dibujar correspondiente a cada una de las clases establecidas que cuentan con la eherencia de Figura.
 
 ***Parte 3: hipótesis sobre la implementación***
 
@@ -79,15 +76,19 @@ Esta es la parte más importante. Imagina que eres un diseñador de lenguajes de
 
 Memoria y herencia: cuando creas un objeto Rectangulo, este tiene Base, Altura y también Nombre. ¿Cómo te imaginas que se organizan esos tres datos en la memoria del computador para formar un solo objeto?
 
-En memoria, un objeto Rectangulo es un bloque que contiene primero los datos que se heredan de Figura y luego los propios que serian Base y Altura.
+🦜 En memoria, un objeto Rectangulo es un bloque que contiene primero los datos que se heredan de Figura y luego los propios que serian Base y Altura.
 
 El mecanismo del polimorfismo: pensemos de nuevo en la llamada fig.Dibujar(). El compilador solo sabe que fig es una Figura. ¿Cómo decide el programa, mientras se está ejecutando, si debe llamar al Dibujar del Circulo o al del Rectangulo? Lanza algunas ideas o hipótesis.
 
+- El compilador crea una lista o tabla de métodos para cada clase, y en tiempo de ejecución se consulta cuál de esos métodos debe usarse según el tipo real del objeto.
+  
+- Otra posibilidad es que la llamada sea como un “puente”: primero va al método de Figura, pero ahí hay una especie de instrucción que redirige la ejecución hacia la implementación que tenga la subclase.
 
 
 
 La barrera del encapsulamiento: ¿Cómo crees que el compilador logra que no puedas acceder a un miembro private desde fuera de la clase? ¿Es algo que se revisa cuando escribes el código, o es una protección que existe mientras el programa se ejecuta? ¿Por qué piensas eso?
 
+- Cuando se escribe el código y se trata de acceder a un private, el compilador detecta que no está permitido y directamente te da un error. O sea, ni siquiera deja que se genere el programa.
 
 
 ***Parte 4: y tu autoevaluación y primeras preguntas***
@@ -100,7 +101,7 @@ Si prefieres la “ruta guiada” adelante. Comienza con la actividad 2.
 
 
 ## 2.  **La pregunta inicial**
-
+¿Como hacer que la clase principal tenga acceso a las subclases? ¿es posible hacer que esta haga cambios en las demás?
 ## 3.  **Registro de exploración:** 
 > Aquí documentas cada ciclo de pregunta -> hipótesis -> experimento -> hallazgo -> reflexión.
 > Debe ser rico en evidencia visual (código, capturas del depurador con anotaciones, diagramas).
