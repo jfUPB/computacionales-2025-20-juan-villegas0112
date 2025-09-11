@@ -101,10 +101,77 @@ Si prefieres la “ruta guiada” adelante. Comienza con la actividad 2.
 
 
 ## 2.  **La pregunta inicial**
-¿Como hacer que la clase principal tenga acceso a las subclases? ¿es posible hacer que esta haga cambios en las demás?
+¿Como es el correcto funcionamiento del metodo Dibujar y como cambia respecto a la clase que se use?
 ## 3.  **Registro de exploración:** 
+
+### Actividad 2
+
 > Aquí documentas cada ciclo de pregunta -> hipótesis -> experimento -> hallazgo -> reflexión.
-> Debe ser rico en evidencia visual (código, capturas del depurador con anotaciones, diagramas).
+
+🧐🧪✍️ Analiza el código de la aplicación y trata de explicar en tus propias palabras qué está haciendo, NO USES IA generativa. Captura pantallas de la aplicación funcionando y añádelas a la bitácora de aprendizaje.
+
+- Al leer el codigo y no ejecutarlo supongo, que se trata de la creacion mediante el uso del click, que parten de la parte inferior de la pantalla recorren cierta distancia hacia arriba y luego explotan. Tambien se sabe que las particulas no tienen simepre la misma direccion, color, tamaño de explosion, etc...
+```c++
+// -------------------------------------------------
+// Clase base abstracta: Particle
+// -------------------------------------------------
+class Particle {
+public:
+	virtual ~Particle() { }
+	virtual void update(float dt) = 0;
+	virtual void draw() = 0;
+	virtual bool isDead() const = 0;
+	// Nuevo método para saber si la partícula (tipo RisingParticle) debe explotar
+	virtual bool shouldExplode() const { return false; }
+	// Métodos para obtener posición y color, para usarlos en explosiones
+	virtual glm::vec2 getPosition() const { return glm::vec2(0, 0); }
+	virtual ofColor getColor() const { return ofColor(255); }
+};
+
+// -------------------------------------------------
+// RisingParticle: Partícula que nace en la parte inferior central y sube
+// -------------------------------------------------
+class RisingParticle : public Particle {
+protected:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	ofColor color;
+	float lifetime; // tiempo máximo antes de explotar
+	float age;
+	bool exploded;
+```
+
+- Captura pantallas de la aplicación funcionando
+  <img width="1024" height="768" alt="screenshot_3030" src="https://github.com/user-attachments/assets/e4702ec6-2c77-47ea-a712-76899d37d265" />
+
+  <img width="1024" height="768" alt="screenshot_4002" src="https://github.com/user-attachments/assets/3beb7e29-a463-4399-abbd-45912144d0f6" />
+
+  <img width="1024" height="768" alt="screenshot_4403" src="https://github.com/user-attachments/assets/fa594f98-0ddf-4529-b3ce-30d12b23c83d" />
+
+  <img width="1024" height="768" alt="screenshot_4509" src="https://github.com/user-attachments/assets/896368d4-c717-4a73-be2e-d052de01d8ce" />
+
+
+
+### Actividad 3
+
+🧐🧪✍️ 
+¿Qué esperas ver en memoria (hipótesis)?
+En la memoria se deben ver los valores de las variables creadas y los tipos de cada una.
+
+<img width="945" height="175" alt="image" src="https://github.com/user-attachments/assets/fe21e7d5-b860-46f9-aef2-91545f63541d" />
+
+Ejecuta el código y muestra una captura de pantalla del objeto en la memoria. ¿Qué puedes observar? ¿Qué información te proporciona el depurador? ¿Qué puedes concluir?
+
+### Actividad 4
+
+
+### Actividad 5
+
+
+
+### Actividad 6
+
+
 
 ## 4.  **Consolidación, autoevaluación y cierre:**
 > [!CAUTION]
