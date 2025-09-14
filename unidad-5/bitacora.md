@@ -156,11 +156,78 @@ protected:
 
 🧐🧪✍️ 
 ¿Qué esperas ver en memoria (hipótesis)?
+
 En la memoria se deben ver los valores de las variables creadas y los tipos de cada una.
 
-<img width="945" height="175" alt="image" src="https://github.com/user-attachments/assets/fe21e7d5-b860-46f9-aef2-91545f63541d" />
 
-Ejecuta el código y muestra una captura de pantalla del objeto en la memoria. ¿Qué puedes observar? ¿Qué información te proporciona el depurador? ¿Qué puedes concluir?
+Ejecuta el código y muestra una captura de pantalla del objeto en la memoria.
+<img width="774" height="163" alt="image" src="https://github.com/user-attachments/assets/dbd88958-e268-44de-bc29-6136608be631" />
+
+¿Qué puedes observar? 
+- Que estoy dentro de un método de la clase ofApp y el depurador muestra la variable this. Tambien, se observa que this es un puntero a la instancia actual de ofApp en memoria. Su dirección de memoria es 0x000001dc90bf3b90. Al expandir this el depurador ya muestra uno de sus miembros: particles. Particles es un std::vector<Particle*> y en este momento tiene size = 160, es decir 160 elementos almacenados.
+
+¿Qué información te proporciona el depurador? 
+- La ubicación exacta en memoria de la instancia de ofApp, el tipo de dato real del objeto (ofApp*) y el estado interno actual de sus atributos/miembros (en este caso, particles y su tamaño).
+
+¿Qué puedes concluir?
+- La instancia de ofApp existe en la memoria y el depurador permite ver su contenido en tiempo de ejecución.
+- Usar el depurador permite ver los valores reales de sus atributos y así comprobar si el programa está funcionando como se espera.
+- También se puede comprobar el tamaño y existencia de los objetos dinámicos sin necesidad de ver nada en consola.
+
+¿Qué puedes observar en la memoria? 
+
+<img width="1596" height="163" alt="image" src="https://github.com/user-attachments/assets/350899dc-a764-4dc6-9062-3e0062f25c02" />
+
+- Aparece la lista de variables locales actuales:
+- particles es el std::vector<Particle*> que contiene todos los punteros a partículas existentes.
+- particles[i] es un puntero a una instancia concreta de RisingParticle.
+- this es el puntero al objeto ofApp, que tiene como miembro ese vector particles.
+- Dentro de particles[i] se  puede ver sus atributos internos, como: position = {x=514.89, y=...} y velocity = {x=-83.00, y=...}
+
+
+¿Qué información te proporciona el depurador? 
+- La dirección de memoria exacta donde está guardado cada objeto.
+- El tipo real del objeto
+- Los valores en tiempo real de los campos de la clase.
+- Que el objeto está en el heap, no en la pila (stack).
+
+
+
+¿Qué puedes concluir? 
+- Los elementos de particles son punteros a objetos que están almacenados en el heap.
+- El depurador permite:
+    - Ver su dirección de memoria.
+    - Ver sus atributos en tiempo real.
+    - Ver su tipo dinámico.
+
+
+
+
+🧐🧪✍️ Captura la _vtable de un objeto CircularExplosion, pega la imagen en tu bitácora, pero observa detenidamente la tabla de funciones. ¿Qué puedes observar?
+
+<img width="535" height="134" alt="image" src="https://github.com/user-attachments/assets/fecd0bb5-be30-44db-8848-d3dc2f9412dc" />
+
+- El _vfptr  dentro del objeto apunta a la vtable de CircularExplosion.
+- La vtable contiene varias entradas (cada una es un puntero a código).
+
+🧐🧪✍️ Ahora, captura en memoria la _vtable de un objeto StarExplosion, pega la imagen en tu bitácora y observa detenidamente la tabla de funciones
+
+<img width="529" height="140" alt="image" src="https://github.com/user-attachments/assets/90f88d4b-0e72-4f66-bfe3-48b914ca7aa6" />
+
+🧐🧪✍️ Observa de nuevo ambas tablas y compara. ¿Qué puedes ver? ¿Qué puedes concluir? ¿Qué relación existe entre la tabla de funciones y los métodos virtuales? 
+
+- Ambas tienen una estructura parecida; varios punteros a funciones, pero apuntan a distintas direcciones de memoria, eso significa que apuntan a distintas implementaciones de los métodos.
+- Algunas entradas son iguales porque vienen de clases base (como Particle o ExplosionParticle) y otras cambian porque fueron sobrescritas en la clase derivada.
+
+¿Cómo se logra esto? ¿Qué relación existe entre los métodos virtuales y el polimorfismo? Al llamar HacerSonido cómo sabe esta función sobre cuál objeto debe actuar?
+- Cuando ee declara un método como virtual, el compilador añade una entrada a la vtable de esa clase con la dirección de esa función.
+- Si una clase hija sobrescribe ese método, el compilador reemplaza esa entrada en la vtable de la clase hija con la dirección del nuevo método.
+- En cada objeto hay un campo oculto llamado _vptr que apunta a la vtable de su clase.
+
+
+
+
+
 
 ### Actividad 4
 
