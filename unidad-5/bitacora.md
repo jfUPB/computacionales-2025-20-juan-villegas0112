@@ -263,9 +263,39 @@ El encapsulamiento es la capaicdad de acceso que se le puede dar a diferentes pr
 
 ### Actividad 5
 
+🧐🧪✍️ captura de nuevo la memoria que ocupa el objeto CircularExplosion compara la jerarquía de clases con los campos en memoria del objeto. ¿Qué puedes observar? 
+<img width="542" height="178" alt="image" src="https://github.com/user-attachments/assets/96be5cd8-88fe-4ede-8e6a-d5d1fac0a149" />
+
+Se muestran todos los campos heredados de Particle, después los de ExplosionParticle, y finalmente los de CircularExplosion.
+
+¿Qué información te proporciona el depurador? 
+
+- El tipo real del objeto almacenado en el vector.
+- La disposición de los miembros en memoria, mostrando primero los campos heredados y luego los propios.
+- El tamaño y dirección de memoria de cada campo, lo cual ayuda a entender cómo se construye el objeto en memoria.
+- El contenido actual de cada variable.
+- La existencia del __vfptr, que confirma que hay herencia polimórfica y que el objeto sabe a qué implementación concreta de los métodos virtuales debe llamar.
+
+¿Qué puedes concluir?
+La memoria del CircularExplosion contiene primero la parte correspondiente a Particle, luego la de ExplosionParticle y finalmente su propia parte.
+
+🧐🧪✍️ ¿Cómo se implementa la herencia en C++?
+
+La herencia en C++ se implementa por composición de memoria y tablas virtuales:
+el compilador combina todos los miembros de la clase base y los coloca en el objeto de la clase derivada, y si hay funciones virtuales, añade el mecanismo de vtable para permitir el polimorfismo en tiempo de ejecución.
 
 
 ### Actividad 6
+
+🧐🧪✍️¿Qué puedes observar? 
+
+<img width="608" height="92" alt="image" src="https://github.com/user-attachments/assets/9a18ec8c-8e6f-4d59-a785-6b177c7fa6b1" />
+- Aunque todos los elementos están guardados como Particle* dentro del vector particles, cada uno recuerda de qué tipo real es en verdad. Entonces, cuando el programa llama a particles[i]->update(dt), no ejecuta siempre el mismo update()
+
+¿Qué información te proporciona el depurador?
+- Muestra en tiempo de ejecución qué implementación concreta de update() está siendo llamada en cada iteración.
+- Confirma que el polimorfismo dinámico está funcionando, ya que la decisión de qué método llamar no se hace en compilación sino en ejecución.
+- Te deja ver que objetos distintos dentro del mismo vector llaman métodos distintos, a pesar de tener el mismo tipo de puntero (Particle*).
 
 
 
