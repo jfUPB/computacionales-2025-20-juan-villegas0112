@@ -224,12 +224,41 @@ Ejecuta el código y muestra una captura de pantalla del objeto en la memoria.
 - Si una clase hija sobrescribe ese método, el compilador reemplaza esa entrada en la vtable de la clase hija con la dirección del nuevo método.
 - En cada objeto hay un campo oculto llamado _vptr que apunta a la vtable de su clase.
 
-
-
-
-
-
 ### Actividad 4
+🧐🧪✍️¿Qué sucede? 
+
+Cuando se descomenta las dos líneas que intentan acceder a protectedVar y privateVar, el compilador muestra errores de acceso y no deja compilar el programa.
+
+¿Por qué sucede esto?
+
+Esto ocurre porque:
+
+- public: accesibles desde cualquier parte del programa.
+- protected: accesibles solo desde la misma clase o clases hijas (heredadas), pero no desde funciones externas como main.
+- private: accesibles únicamente desde dentro de la misma clase que los declara.
+
+Entonces, main no tiene permiso para acceder a protectedVar ni privateVar.
+
+ ¿Qué puedes concluir?
+ 
+Los modificadores de acceso existen para proteger los datos y controlar cómo se usan desde fuera de la clase, cumpliendo con el principio de encapsulación en programación orientada a objetos.
+
+🧐🧪✍️ Compila el programa. ¿Qué pasa?
+
+<img width="630" height="86" alt="image" src="https://github.com/user-attachments/assets/ecb6e1c1-6de1-4248-809d-00318d2e84dd" />
+
+no permite ejecutar
+
+🧐🧪✍️ Compila el programa y ejecuta. ¿Qué puedes concluir?
+
+El programa compila sin errores.
+
+Al ejecutarlo:
+<img width="452" height="79" alt="image" src="https://github.com/user-attachments/assets/b4be1b8f-9328-4ed2-95f3-9b9c6cc79f96" />
+
+🧐🧪✍️ En tus palabras, ¿Qué es el encapsulamiento? ¿Por qué es importante?
+
+El encapsulamiento es la capaicdad de acceso que se le puede dar a diferentes procesos de codigo. Es importante porque evita errores y ayuda a tener un mejor orden a la hora de programar.
 
 
 ### Actividad 5
