@@ -297,7 +297,13 @@ el compilador combina todos los miembros de la clase base y los coloca en el obj
 - Confirma que el polimorfismo dinámico está funcionando, ya que la decisión de qué método llamar no se hace en compilación sino en ejecución.
 - Te deja ver que objetos distintos dentro del mismo vector llaman métodos distintos, a pesar de tener el mismo tipo de puntero (Particle*).
 
+🧐🧪✍️ Realiza un dibujo con el cuál expliques cómo se implementa el polimorfismo en tiempo de ejecución. Utiliza el concepto de métodos virtuales y la tabla de funciones virtuales. ¿Qué puedes concluir?
 
+<img width="718" height="483" alt="image" src="https://github.com/user-attachments/assets/10813042-1c4e-4c63-a201-9bef4950145e" />
+
+🧐🧪✍️ ¿Qué relación existe entre los métodos virtuales y el polimorfismo?
+
+Los métodos virtuales hacen posible el polimorfismo porque permiten que la decisión sobre qué versión del método ejecutar se haga en tiempo de ejecución, basándose en el tipo real del objeto.
 
 ## 4.  **Consolidación, autoevaluación y cierre:**
 > [!CAUTION]
