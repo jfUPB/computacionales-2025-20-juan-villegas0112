@@ -305,6 +305,493 @@ el compilador combina todos los miembros de la clase base y los coloca en el obj
 
 Los métodos virtuales hacen posible el polimorfismo porque permiten que la decisión sobre qué versión del método ejecutar se haga en tiempo de ejecución, basándose en el tipo real del objeto.
 
+###Actividad 07
+
+- Agrega dos nuevos tipos de Particle diferentes a RisingParticle.
+- Implementar un nuevo modo de explosión.
+
+ofApp.h
+```cpp
+#pragma once
+#include "ofMain.h"
+#include <vector>
+
+// -------------------------------------------------
+// Clase base abstracta: Particle
+// -------------------------------------------------
+class Particle {
+public:
+	virtual ~Particle() { }
+	virtual void update(float dt) = 0;
+	virtual void draw() = 0;
+	virtual bool isDead() const = 0;
+	virtual bool shouldExplode() const { return false; }
+	virtual glm::vec2 getPosition() const { return glm::vec2(0, 0); }
+	virtual ofColor getColor() const { return ofColor(255); }
+};
+
+// -------------------------------------------------
+// RisingParticle: Partícula que nace en la parte inferior central y sube
+// -------------------------------------------------
+class RisingParticle : public Particle {
+protected:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	ofColor color;
+	float lifetime;
+	float age;
+	bool exploded;
+
+public:
+	RisingParticle(const glm::vec2 & pos, const glm::vec2 & vel, const ofColor & col, float life)
+		: position(pos)
+		, velocity(vel)
+		, color(col)
+		, lifetime(life)
+		, age(0)
+		, exploded(false) {
+	}
+
+	void update(float dt) override {
+		position += velocity * dt;
+		age += dt;
+		velocity.y += 9.8f * dt * 8;
+		float explosionThreshold = ofGetHeight() * 0.15 + ofRandom(-30, 30);
+		if (position.y <= explosionThreshold || age >= lifetime) {
+			exploded = true;
+		}
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawCircle(position, 10);
+	}
+
+	bool isDead() const override { return exploded; }
+	bool shouldExplode() const override { return exploded; }
+	glm::vec2 getPosition() const override { return position; }
+	ofColor getColor() const override { return color; }
+};
+
+// -------------------------------------------------
+// SideParticle: Partícula que nace en los costados y cruza horizontalmente
+// -------------------------------------------------
+class SideParticle : public Particle {
+protected:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	ofColor color;
+	float lifetime;
+	float age;
+	bool exploded;
+
+public:
+	SideParticle(const glm::vec2 & pos, const glm::vec2 & vel, const ofColor & col, float life)
+		: position(pos)
+		, velocity(vel)
+		, color(col)
+		, lifetime(life)
+		, age(0)
+		, exploded(false) {
+	}
+
+	void update(float dt) override {
+		position += velocity * dt;
+		age += dt;
+		velocity.y += 9.8f * dt * 2;
+		if (age >= lifetime || (position.x > ofGetWidth() * 0.45 && position.x < ofGetWidth() * 0.55)) {
+			exploded = true;
+		}
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawCircle(position, 8);
+	}
+
+	bool isDead() const override { return exploded; }
+	bool shouldExplode() const override { return exploded; }
+	glm::vec2 getPosition() const override { return position; }
+	ofColor getColor() const override { return color; }
+};
+
+// -------------------------------------------------
+// DiagonalParticle: Partícula que sube en diagonal desde las esquinas
+// -------------------------------------------------
+class DiagonalParticle : public Particle {
+protected:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	ofColor color;
+	float lifetime;
+	float age;
+	bool exploded;
+
+public:
+	DiagonalParticle(const glm::vec2 & pos, const glm::vec2 & vel, const ofColor & col, float life)
+		: position(pos)
+		, velocity(vel)
+		, color(col)
+		, lifetime(life)
+		, age(0)
+		, exploded(false) {
+	}
+
+	void update(float dt) override {
+		position += velocity * dt;
+		age += dt;
+		velocity.y += 9.8f * dt * 3;
+		float explosionThreshold = ofGetHeight() * 0.33 + ofRandom(-20, 20);
+		if (position.y <= explosionThreshold || age >= lifetime) {
+			exploded = true;
+		}
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawRectangle(position.x, position.y, 12, 12);
+	}
+
+	bool isDead() const override { return exploded; }
+	bool shouldExplode() const override { return exploded; }
+	glm::vec2 getPosition() const override { return position; }
+	ofColor getColor() const override { return color; }
+};
+
+// -------------------------------------------------
+// Clase base para explosiones: ExplosionParticle
+// -------------------------------------------------
+class ExplosionParticle : public Particle {
+protected:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	ofColor color;
+	float age;
+	float lifetime;
+	float size;
+
+public:
+	ExplosionParticle(const glm::vec2 & pos, const glm::vec2 & vel, const ofColor & col, float life, float sz)
+		: position(pos)
+		, velocity(vel)
+		, color(col)
+		, age(0)
+		, lifetime(life)
+		, size(sz) {
+	}
+
+	void update(float dt) override {
+		position += velocity * dt;
+		age += dt;
+		float alpha = ofMap(age, 0, lifetime, 255, 0, true);
+		color.a = alpha;
+	}
+
+	bool isDead() const override { return age >= lifetime; }
+};
+
+// -------------------------------------------------
+// CircularExplosion: Explosión en patrón circular
+// -------------------------------------------------
+class CircularExplosion : public ExplosionParticle {
+public:
+	CircularExplosion(const glm::vec2 & pos, const ofColor & col)
+		: ExplosionParticle(pos, glm::vec2(0, 0), col, 1.2f, ofRandom(16, 32)) {
+		float angle = ofRandom(0, TWO_PI);
+		float speed = ofRandom(80, 200);
+		velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawCircle(position, size);
+	}
+};
+
+// -------------------------------------------------
+// RandomExplosion: Explosión con direcciones aleatorias
+// -------------------------------------------------
+class RandomExplosion : public ExplosionParticle {
+public:
+	RandomExplosion(const glm::vec2 & pos, const ofColor & col)
+		: ExplosionParticle(pos, glm::vec2(0, 0), col, 1.5f, ofRandom(16, 32)) {
+		velocity = glm::vec2(ofRandom(-200, 200), ofRandom(-200, 200));
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawRectangle(position.x, position.y, size, size);
+	}
+};
+
+// -------------------------------------------------
+// StarExplosion: Explosión en forma de estrella
+// -------------------------------------------------
+class StarExplosion : public ExplosionParticle {
+public:
+	StarExplosion(const glm::vec2 & pos, const ofColor & col)
+		: ExplosionParticle(pos, glm::vec2(0, 0), col, 1.3f, ofRandom(20, 40)) {
+		float angle = ofRandom(0, TWO_PI);
+		float speed = ofRandom(90, 180);
+		velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		int rays = 5;
+		float outerRadius = size;
+		float innerRadius = size * 0.5;
+		ofPushMatrix();
+		ofTranslate(position);
+		for (int i = 0; i < rays; i++) {
+			float theta = ofMap(i, 0, rays, 0, TWO_PI);
+			float xOuter = cos(theta) * outerRadius;
+			float yOuter = sin(theta) * outerRadius;
+			float xInner = cos(theta + PI / rays) * innerRadius;
+			float yInner = sin(theta + PI / rays) * innerRadius;
+			ofDrawLine(0, 0, xOuter, yOuter);
+			ofDrawLine(xOuter, yOuter, xInner, yInner);
+		}
+		ofPopMatrix();
+	}
+};
+// -------------------------------------------------
+// SpiralExplosion: Explosión en espiral
+// -------------------------------------------------
+class SpiralExplosion : public ExplosionParticle {
+private:
+	float angle; // ángulo actual
+	float angularVel; // velocidad angular
+public:
+	SpiralExplosion(const glm::vec2 & pos, const ofColor & col)
+		: ExplosionParticle(pos, glm::vec2(0, 0), col, 1.8f, ofRandom(10, 25)) {
+		angle = ofRandom(0, TWO_PI);
+		angularVel = ofRandom(4, 10); // qué tan rápido rota
+		float speed = ofRandom(60, 120);
+		velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+	}
+
+	void update(float dt) override {
+		age += dt;
+		angle += angularVel * dt;
+
+		// velocidad radial se actualiza como si girara
+		float speed = glm::length(velocity);
+		velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+
+		position += velocity * dt;
+
+		// desvanecer
+		float alpha = ofMap(age, 0, lifetime, 255, 0, true);
+		color.a = alpha;
+	}
+
+	void draw() override {
+		ofSetColor(color);
+		ofDrawCircle(position, size);
+	}
+};
+
+// -------------------------------------------------
+// ofApp: Manejo de la escena y eventos
+// -------------------------------------------------
+class ofApp : public ofBaseApp {
+public:
+	void setup();
+	void update();
+	void draw();
+	void mousePressed(int x, int y, int button);
+	void keyPressed(int key);
+
+	std::vector<Particle *> particles;
+	~ofApp();
+
+private:
+	void createRisingParticle();
+	void createSideParticle();
+	void createDiagonalParticle();
+};
+
+```
+ofApp.cpp
+```cpp
+#include "ofApp.h"
+
+// --------------------------------------------------------------
+void ofApp::setup() {
+	ofSetFrameRate(60);
+	ofBackground(0);
+}
+
+// --------------------------------------------------------------
+void ofApp::update() {
+	float dt = ofGetLastFrameTime();
+
+	for (int i = 0; i < particles.size(); i++) {
+		particles[i]->update(dt);
+	}
+
+	
+	for (int i = particles.size() - 1; i >= 0; i--) {
+		if (particles[i]->shouldExplode()) {
+			int explosionType = (int)ofRandom(4); // 0: Circular, 1: Random, 2: Star, 3: Spiral
+			int numParticles = (int)ofRandom(20, 30);
+			for (int j = 0; j < numParticles; j++) {
+				if (explosionType == 0) {
+					particles.push_back(new CircularExplosion(particles[i]->getPosition(), particles[i]->getColor()));
+				} else if (explosionType == 1) {
+					particles.push_back(new RandomExplosion(particles[i]->getPosition(), particles[i]->getColor()));
+				} else if (explosionType == 2) {
+					particles.push_back(new StarExplosion(particles[i]->getPosition(), particles[i]->getColor()));
+				} else if (explosionType == 3) {
+					particles.push_back(new SpiralExplosion(particles[i]->getPosition(), particles[i]->getColor()));
+				}
+			}
+			delete particles[i];
+			particles.erase(particles.begin() + i);
+		} else if (particles[i]->isDead()) {
+			delete particles[i];
+			particles.erase(particles.begin() + i);
+		}
+	}
+}
+
+// --------------------------------------------------------------
+void ofApp::draw() {
+	for (int i = 0; i < particles.size(); i++) {
+		particles[i]->draw();
+	}
+}
+
+// --------------------------------------------------------------
+void ofApp::createRisingParticle() {
+	float minX = ofGetWidth() * 0.35;
+	float maxX = ofGetWidth() * 0.65;
+	float spawnX = ofRandom(minX, maxX);
+	glm::vec2 pos(spawnX, ofGetHeight());
+	glm::vec2 target(ofGetWidth() / 2 + ofRandom(-300, 300), ofGetHeight() * 0.10 + ofRandom(-30, 30));
+	glm::vec2 direction = glm::normalize(target - pos);
+	glm::vec2 vel = direction * ofRandom(250, 350);
+	ofColor col;
+	col.setHsb(ofRandom(255), 220, 255);
+	float lifetime = ofRandom(1.5, 3.5);
+	particles.push_back(new RisingParticle(pos, vel, col, lifetime));
+}
+
+// --------------------------------------------------------------
+void ofApp::createSideParticle() {
+	float y = ofRandom(ofGetHeight() * 0.4, ofGetHeight() * 0.9);
+	bool fromLeft = ofRandom(1.0) < 0.5;
+	glm::vec2 pos(fromLeft ? 0 : ofGetWidth(), y);
+	glm::vec2 vel = glm::normalize(glm::vec2(fromLeft ? 1 : -1, ofRandom(-0.3, -0.6))) * ofRandom(200, 300);
+	ofColor col;
+	col.setHsb(ofRandom(255), 220, 255);
+	float lifetime = ofRandom(1.5, 3.0);
+	particles.push_back(new SideParticle(pos, vel, col, lifetime));
+}
+
+// --------------------------------------------------------------
+void ofApp::createDiagonalParticle() {
+	bool fromLeft = ofRandom(1.0) < 0.5;
+	glm::vec2 pos(fromLeft ? glm::vec2(0, ofGetHeight()) : glm::vec2(ofGetWidth(), ofGetHeight()));
+	glm::vec2 target(ofGetWidth() / 2, ofGetHeight() * 0.2);
+	glm::vec2 vel = glm::normalize(target - pos) * ofRandom(250, 350);
+	ofColor col;
+	col.setHsb(ofRandom(255), 200, 255);
+	float lifetime = ofRandom(1.8, 3.2);
+	particles.push_back(new DiagonalParticle(pos, vel, col, lifetime));
+}
+
+// --------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button) {
+	createRisingParticle();
+}
+
+// --------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+	if (key == ' ') {
+		for (int i = 0; i < 1000; i++) {
+			createRisingParticle();
+		}
+	}
+	if (key == 's') {
+		ofSaveScreen("screenshot_" + ofToString(ofGetFrameNum()) + ".png");
+	}
+	if (key == '1') {
+		createSideParticle();
+	}
+	if (key == '2') {
+		createDiagonalParticle();
+	}
+}
+
+// --------------------------------------------------------------
+ofApp::~ofApp() {
+	for (int i = 0; i < particles.size(); i++) {
+		delete particles[i];
+	}
+	particles.clear();
+}
+
+```
+1. ¿Cómo y por qué de la implementación de cada una de las extensiones solicitadas al caso de estudio?
+
+En el caso de estudio partimos de una clase base de partículas (Particle) y fui extendiendo su comportamiento con nuevos tipos:
+
+RisingParticle
+
+Cómo: se implementó como partícula inicial que asciende y, tras cierto tiempo, genera una explosión.
+
+Por qué: simula un fuego artificial antes de explotar.
+
+CircularExplosion, RandomExplosion, StarExplosion
+
+Cómo: se sacan de la clase base ExplosionParticle, cada uno con su lógica propia para inicializar y actualizar las trayectorias.
+
+Por qué: permiten ver diferentes patrones de fuegos artificiales. Cada extensión aumenta la variedad visual sin modificar el código ya existente.
+
+SpiralExplosion (nueva)
+
+Cómo: se implementó como una clase derivada de ExplosionParticle, en la que la posición se calcula usando un ángulo que rota con velocidad angular y un radio que aumenta con el tiempo.
+
+Por qué: agrega un nuevo tipo de explosión.
+
+2. ¿Cómo y por qué de la implementación de los conceptos de encapsulamiento, herencia y polimorfismo en tu código?
+
+Encapsulamiento
+
+Cómo: cada clase tiene atributos privados (position, velocity, age, etc.) y métodos públicos controlados (update(), draw()).
+
+Por qué: protege el estado interno de las partículas y obliga a interactuar mediante funciones, garantizando coherencia y evitando modificaciones externas no deseadas.
+
+Herencia
+
+Cómo: RisingParticle y todas las explosiones derivan de Particle o de ExplosionParticle.
+
+Por qué: se reutilizan atributos comunes (posición, velocidad, color, tiempo de vida) sin duplicar código. Cada clase solo redefine lo que cambia en su comportamiento.
+
+Polimorfismo
+
+Cómo: se usan punteros a la clase base Particle* para almacenar y manipular todas las partículas, sin importar si en tiempo de ejecución son Rising, Circular, Random, Star o Spiral.
+
+Por qué: permite tratar de manera uniforme a todos los objetos, pero cada uno ejecuta su versión de update() y draw() según su tipo real (polimorfismo dinámico).
+
+3. Explica cómo verificaste que cada una de las extensiones funciona correctamente, muestra capturas de pantalla del depurador donde evidencias lo anterior, en particular el polimorfismo en tiempo de ejecución.
+Pruebas visuales
+
+Se forzó temporalmente el explosionType en el update() para generar únicamente cada tipo de explosión (ejemplo: int explosionType = 3; // Spiral), verificando que apareciera el patrón esperado.
+
+<img width="882" height="267" alt="image" src="https://github.com/user-attachments/assets/b23d4a12-65fa-4ec6-9d56-1c80719ed632" />
+
+<img width="819" height="563" alt="image" src="https://github.com/user-attachments/assets/ac728d2c-2cfe-4ac1-bbea-16dbf179a4cd" />
+
+
 ## 4.  **Consolidación, autoevaluación y cierre:**
-> [!CAUTION]
+
+En una hoja de papel o un white board digital te pediré que hagas un inventario de los conceptos de las unidades 1 a la 5. Luego construye un diagrama donde ubiques todos los conceptos tratando de agruparlos y relacionarlos entre sí.
+Pregúntate: ¿Qué conceptos domino bien? ¿Cuáles me cuestan más trabajo?
+Pregúntate para qué pueden servirte estos conceptos.
+¿Qué hiciste bien en esta unidad que debes continuar haciendo?
+¿Qué deberías comenzar a hacer para mejorar tu proceso?
+Formula tu plan de acción personal para abordar aquello que te cueste más trabajo.
 > Esta sección es OBLIGATORIA y central para tu evaluación
