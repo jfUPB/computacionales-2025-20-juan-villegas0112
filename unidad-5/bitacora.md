@@ -788,6 +788,13 @@ Se forzó temporalmente el explosionType en el update() para generar únicamente
 
 ## 4.  **Consolidación, autoevaluación y cierre:**
 
+Mi nota es:
+c1: 4.5
+c2: 4.5
+c3: 5
+c4: 5
+
+TOTAL: 4.75
 
 Criterio 1: profundidad de la indagación
 
