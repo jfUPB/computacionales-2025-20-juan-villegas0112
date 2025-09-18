@@ -788,10 +788,82 @@ Se forzó temporalmente el explosionType en el update() para generar únicamente
 
 ## 4.  **Consolidación, autoevaluación y cierre:**
 
+
+Criterio 1: profundidad de la indagación
+
+Mi autoevaluación: me sitúo en el nivel [logrado] porque…formulé preguntas que no solo buscaban entender cada concepto de forma aislada, sino también establecer conexiones entre ellos. Por ejemplo, traté de comprender cómo la herencia influye en el comportamiento del polimorfismo a través de estructuras internas como la vtable, y cómo el encapsulamiento puede afectar la manera en que esas relaciones se implementan en memoria. Estas preguntas muestran que busqué ir más allá de la simple definición de los conceptos, siguiendo una línea lógica de exploración que apuntaba a entender sus mecanismos internos.
+Evidencias: En mis notas, hice preguntas como:
+
+¿Cómo se organiza en memoria una clase base y sus clases derivadas?
+
+¿Qué papel juega la vtable en el despacho dinámico de métodos polimórficos?
+
+¿Cómo cambia el acceso a los miembros cuando aplico encapsulamiento y cómo eso afecta el polimorfismo?
+
+Utilicé el depurador para observar cómo se crean y almacenan los objetos en memoria al aplicar herencia, verificando qué cambia en la vtable cuando redefino métodos virtuales.
+
+Relacioné estos hallazgos con ejemplos escritos tanto en ensamblador como en C++, comprobando la traducción de conceptos de alto nivel a bajo nivel.
+
+Criterio 2: esfuerzo cognitivo y experimentación
+
+Mi autoevaluación: considero que mi nivel es [logrado] porque… diseñé y ejecuté experimentos específicos para comprobar el funcionamiento de los conceptos de herencia, polimorfismo y encapsulamiento, y no me limité a ejecutar el código base. Además, utilicé el depurador para recolectar evidencia del comportamiento interno de los programas, analizando paso a paso cómo se ejecutaban y cómo cambiaban los valores en memoria al aplicar cada concepto.
+Evidencias: 
+
+Modifiqué el código original creando nuevas clases derivadas que sobrescribían métodos virtuales para observar cómo se actualizaba la vtable y cómo se resolvían las llamadas polimórficas en tiempo de ejecución.
+
+Implementé pruebas donde comparé el acceso a atributos privados, protegidos y públicos, verificando con el depurador qué miembros eran visibles desde cada contexto y cómo esto influía en la interacción entre clases.
+
+Criterio 3: calidad del análisis y la reflexión
+
+Mi autoevaluación: mi nivel aquí es [Excelente] porque… mi bitácora no solo verifica el funcionamiento de los conceptos, sino que explica por qué ocurren de esa forma y cuáles son sus implicaciones en el diseño. Analicé errores para extraer aprendizajes, conecté la evidencia con la teoría y construí un modelo mental coherente que integra encapsulamiento, herencia y polimorfismo como parte de un mismo sistema.
+
+Evidencias: 
+Analicé en profundidad cómo el polimorfismo se implementa en la vtable.
+
+Evalué errores (acceso a atributos privados) para reforzar el encapsulamiento.
+
+Reflexioné sobre las implicaciones de diseño de la herencia.
+
+Conecté la evidencia experimental con la teoría, mostrando comprensión crítica.
+
+
+
+
+Criterio 4: apropiación y articulación de conceptos
+
+Mi autoevaluación: demuestro mi apropiación en el nivel [Excelente] porque… logré articular los conceptos de encapsulamiento, herencia y polimorfismo como partes de un mismo sistema interdependiente dentro de la programación orientada a objetos. No solo los comprendí de forma aislada, sino que construí un modelo mental coherente que explica cómo colaboran entre sí para permitir la extensibilidad y el comportamiento dinámico del software. Además, utilicé un lenguaje propio, ejemplos originales y analogías que mostraron que dominé los conceptos a un nivel transferible.
+Evidencias: 
+Expliqué encapsulamiento, herencia y polimorfismo como un sistema que trabaja en conjunto.
+
+Mostré cómo el encapsulamiento protege los datos y permite aplicar polimorfismo de forma segura.
+
+Relacioné cómo la herencia crea jerarquías que el polimorfismo usa para el despacho dinámico.
+
+Conecté estos conceptos con su representación en memoria y en ensamblador, demostrando dominio profundo.
+
+
 En una hoja de papel o un white board digital te pediré que hagas un inventario de los conceptos de las unidades 1 a la 5. Luego construye un diagrama donde ubiques todos los conceptos tratando de agruparlos y relacionarlos entre sí.
+
+https://sharing.clickup.com/90132495685/wb/h/2ky51fa5-573/52ae501ac2143c5
+
 Pregúntate: ¿Qué conceptos domino bien? ¿Cuáles me cuestan más trabajo?
+
+Domino bien la herencia, me cuesta un poco los espacios en la memoria u como identificar en donde se encuentra cada objeto o procedimiento del codigo en c++.
+
 Pregúntate para qué pueden servirte estos conceptos.
+
+Para realizar programas mas estructurados y tener un cococimiento mayor de donde utilizar cada procedimiento, partiendo del que se quiere conseguir con el codigo. 
+
 ¿Qué hiciste bien en esta unidad que debes continuar haciendo?
+
+Investigar y leer bien los codigos que se nos entrergan, analizarlos y comprenderlos.
+
 ¿Qué deberías comenzar a hacer para mejorar tu proceso?
+
+utilizar la ia para mejorar el rendimiento de mi tiempo.
+
 Formula tu plan de acción personal para abordar aquello que te cueste más trabajo.
+
+De ahora en adelante, leeré bien las instrucciones y los codigos, los analizare y tomare nota de las cosas importante, luego puedo preguntarle a la ia que aspectos son fundamentales y debo tener presentes para luego realizar la actividad. 
+
 > Esta sección es OBLIGATORIA y central para tu evaluación
