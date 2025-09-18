@@ -159,6 +159,7 @@ protected:
 
 En la memoria se deben ver los valores de las variables creadas y los tipos de cada una.
 
+<a name="my-debug-evidence"></a>
 
 Ejecuta el código y muestra una captura de pantalla del objeto en la memoria.
 <img width="774" height="163" alt="image" src="https://github.com/user-attachments/assets/dbd88958-e268-44de-bc29-6136608be631" />
@@ -815,6 +816,8 @@ Criterio 2: esfuerzo cognitivo y experimentación
 
 Mi autoevaluación: considero que mi nivel es [logrado] porque… diseñé y ejecuté experimentos específicos para comprobar el funcionamiento de los conceptos de herencia, polimorfismo y encapsulamiento, y no me limité a ejecutar el código base. Además, utilicé el depurador para recolectar evidencia del comportamiento interno de los programas, analizando paso a paso cómo se ejecutaban y cómo cambiaban los valores en memoria al aplicar cada concepto.
 Evidencias: 
+
+Esta lo coloca el profe de ejemplo [Un captura de la depuración](#my-debug-evidence)
 
 Modifiqué el código original creando nuevas clases derivadas que sobrescribían métodos virtuales para observar cómo se actualizaba la vtable y cómo se resolvían las llamadas polimórficas en tiempo de ejecución.
 
