@@ -55,6 +55,95 @@ El propósito del patrón Observer es crear una relación de dependencia entre o
 
 ***Construye un diagrama de secuencia que muestre cómo funciona el patrón Observer al presionar una tecla.***
 
+<img width="824" height="508" alt="image" src="https://github.com/user-attachments/assets/d7382777-7fdc-4901-a737-974be17ae12e" />
 
 ***¿Qué ventajas crees que ofrece usar el patrón Observer en esta aplicación en comparación con, por ejemplo, que ofApp::update recorriera todas las partículas y les dijera directamente que cambien su comportamiento basado en una variable global? Piensa en términos de acoplamiento y extensibilidad.***
+
+- Menos dependencia: ofApp solo envía un aviso y cada partícula decide cómo reaccionar, sin que la aplicación tenga que saber los detalles de cada una.
+
+- Más fácil de ampliar: si se quieren agregar nuevos tipos de partículas o comportamientos, no hay que cambiar el código de ofApp, solo la nueva partícula.
+
+- Código más claro y ordenado: el programa se entiende y se mantiene mejor porque cada parte cumple su función sin mezclarse demasiado con las otras.
+
+- Escala mejor: se pueden tener muchas partículas sin que la lógica central se vuelva complicada.
+
+## Actividad 03
+
+🧐🧪✍️ Reporte
+
+***Explica con tus propias palabras el propósito del patrón Factory Method (o Simple Factory, en este caso). ¿Qué problema principal aborda en la creación de objetos?***
+
+- El propósito del patrón Factory Method (o en este caso, un Simple Factory) es hacer más fácil y ordenada la creación de objetos. En lugar de tener el código de creación repartido por toda la aplicación, se centraliza en   una clase o método que se encarga de fabricar esos objetos.
+
+  El problema principal que resuelve es que el programa no tenga que saber los detalles de cómo se construye cada objeto específico. Así, si más adelante se quieren agregar nuevos tipos (como diferentes partículas en        nuestro caso), no toca modificar en muchos lados, solo en la “fábrica”. Esto ayuda a que el código sea más claro, menos repetitivo y más fácil de mantener.
+
+
+***¿Qué ventajas aporta el uso de ParticleFactory en ofApp::setup en comparación con instanciar y configurar las partículas directamente allí? Piensa en términos de organización del código (SRP - Single Responsibility Principle), legibilidad y facilidad para añadir nuevos tipos de partículas en el futuro.***
+
+- Usar ParticleFactory en ofApp::setup tiene varias ventajas frente a crear y configurar las partículas directamente en ese método. Primero, ayuda a mantener el código organizado: ofApp se encarga solo de manejar la         aplicación y no de los detalles de cómo se construyen las partículas (esto va en línea con el principio de responsabilidad única). Segundo, mejora la legibilidad, porque en setup solo se ve que se crean partículas, sin    toda la lógica de inicialización repetida una y otra vez. Y tercero, facilita mucho agregar nuevos tipos de partículas en el futuro: basta con añadir la lógica en la fábrica, sin tener que tocar el código de ofApp,        manteniendo todo más limpio y fácil de mantener.
+
+***Imagina que quieres añadir un nuevo tipo de partícula llamada "black_hole" que tiene tamaño grande, color negro y velocidad muy lenta. Describe los pasos que necesitarías seguir para implementar esto utilizando la ParticleFactory existente. ¿Tendrías que modificar ofApp::setup? ¿Por qué sí o por qué no?***
+
+1. Ir a la clase ParticleFactory y dentro del método createParticle, agregar un nuevo bloque ```else if (type == "black_hole").```
+
+   Ahí configuraría el tamaño grande (por ejemplo entre 10 y 15), el color negro (ofColor(0,0,0)) y le pondría una velocidad muy lenta.
+
+2. No necesito modificar ofApp::setup, salvo que quiera usar este nuevo tipo allí.
+
+   ofApp::setup seguiría igual de limpio, solo tendría que llamarlo así:
+
+   ```c++
+   Particle* p = ParticleFactory::createParticle("black_hole");
+   ```
+
+
+   Toda la lógica de cómo se configura esta partícula está encapsulada en la fábrica.
+
+
+***El método createParticle en el ejemplo es estático. ¿Qué implicaciones (ventajas/desventajas) tiene esto comparado con tener una instancia de ParticleFactory y un método de instancia createParticle()?.***
+
+- Ventajas de que createParticle sea estático
+
+  Acceso directo: se puede llamar sin crear un objeto ParticleFactory (ej: ParticleFactory::createParticle("rising")), lo que simplifica el uso.
+
+  Menos memoria: no se necesita instanciar la fábrica si no tiene atributos que mantener.
+
+  Comodidad: es práctico cuando la fábrica solo contiene lógica para crear objetos y no necesita guardar estado interno.
+
+- Desventajas
+
+  Menos flexibilidad: no puedes tener diferentes fábricas con comportamientos distintos (ej: una fábrica que cree partículas rápidas y otra lentas).
+
+  Difícil de extender: si quisieras que la fábrica tuviera configuraciones internas (colores, tamaños, reglas), con métodos estáticos no puedes, porque no hay un objeto que mantenga ese estado.
+
+  Dificulta pruebas unitarias: testear métodos estáticos es menos flexible que instanciar fábricas diferentes en pruebas.
+
+
+## Actividad 04
+
+🧐🧪✍️ Reporte
+
+***Explica con tus propias palabras el propósito del patrón State. ¿Cuándo es útil aplicarlo?***
+
+- El propósito del patrón State es permitir que un objeto cambie su comportamiento de manera dinámica según el estado en el que se encuentre, sin necesidad de usar muchos if/else o switch en el código. En vez de eso, cada estado se encapsula en una clase independiente, lo que hace que el diseño sea más claro, flexible y fácil de mantener.
+
+- Cuándo es útil aplicarlo:
+
+     Cuando un objeto tiene varios estados internos y su comportamiento depende de esos estados.
+
+     Cuando el código comienza a llenarse de condiciones (if/else o switch) que verifican el estado actual para decidir qué hacer.
+
+     Cuando se necesita cambiar el comportamiento de un objeto en tiempo de ejecución, sin modificar la lógica principal.
+
+
+***Dibuja un diagrama de estados simple para la clase Particle. Muestra los diferentes estados (Normal, Attract, Repel, Stop) como nodos y las transiciones entre ellos como flechas etiquetadas con el evento que las causa (p. ej., la tecla presionada: ‘n’, ‘a’, ‘r’, ‘s’).***
+
+
+
+***Describe las ventajas de usar el patrón State en Particle en lugar de tener un miembro std::string estadoActual y usar un gran if/else if/else o switch dentro de Particle::update() para cambiar el comportamiento. Piensa en cohesión, extensibilidad (añadir nuevos estados) y el Principio Abierto/Cerrado (Open/Closed Principle).***
+
+
+
+***¿Qué responsabilidad tienen los métodos onEnter y onExit en el patrón State? Proporciona un ejemplo de por qué podrían ser útiles (incluso si no se usan mucho en todos los estados de este caso de estudio). Por ejemplo, ¿Qué podrías hacer en onEnter para AttractState o en onExit para StopState?***
+
 
