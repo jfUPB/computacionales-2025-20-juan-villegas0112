@@ -138,12 +138,76 @@ El propósito del patrón Observer es crear una relación de dependencia entre o
 
 ***Dibuja un diagrama de estados simple para la clase Particle. Muestra los diferentes estados (Normal, Attract, Repel, Stop) como nodos y las transiciones entre ellos como flechas etiquetadas con el evento que las causa (p. ej., la tecla presionada: ‘n’, ‘a’, ‘r’, ‘s’).***
 
+<img width="599" height="539" alt="image" src="https://github.com/user-attachments/assets/c8a39179-7eba-48b2-89b7-6fa05c2697fc" />
 
 
 ***Describe las ventajas de usar el patrón State en Particle en lugar de tener un miembro std::string estadoActual y usar un gran if/else if/else o switch dentro de Particle::update() para cambiar el comportamiento. Piensa en cohesión, extensibilidad (añadir nuevos estados) y el Principio Abierto/Cerrado (Open/Closed Principle).***
 
+- Cohesión 🧩
 
+   Cada estado (NormalState, AttractState, etc.) tiene su propio comportamiento en su propia clase.
+
+   Esto evita que Particle tenga demasiado código mezclado y difícil de leer.
+
+   Así, cada clase se enfoca en una sola responsabilidad (SRP: Single Responsibility Principle).
+
+- Extensibilidad 🚀
+
+   Si quiero agregar un nuevo estado (ejemplo: BounceState), solo creo una nueva clase que herede de State y defina update().
+
+   No necesito tocar la lógica de los otros estados ni llenar Particle::update() con más if/else.
+
+- Principio Abierto/Cerrado (OCP) 📖
+
+   La clase Particle está cerrada a modificaciones pero abierta a extensiones.
+
+   En vez de modificar Particle cada vez que aparece un nuevo estado, solo extiendo con una nueva clase de estado.
+
+   Esto reduce el riesgo de dañar código ya probado.
+
+- Mantenimiento más fácil 🔧
+
+   El código con un switch gigante se vuelve difícil de leer y mantener.
+
+   Con el patrón State, si hay un bug en el comportamiento de un estado, sé exactamente dónde buscar: en su clase correspondiente.
+
+   Polimorfismo limpio 🎭
+
+   Particle no necesita saber cómo se actualiza cada estado.
+
+   Solo llama state->update(this) y delega el comportamiento dinámicamente.
 
 ***¿Qué responsabilidad tienen los métodos onEnter y onExit en el patrón State? Proporciona un ejemplo de por qué podrían ser útiles (incluso si no se usan mucho en todos los estados de este caso de estudio). Por ejemplo, ¿Qué podrías hacer en onEnter para AttractState o en onExit para StopState?***
 
+En el patrón State, los métodos onEnter y onExit sirven para ejecutar código cuando una partícula entra o sale de un estado.
+
+```onEnter(Particle * p)```: se corre al activar un nuevo estado, justo después de hacer el cambio.
+
+```onExit(Particle * p)```: se corre antes de dejar un estado, útil para limpiar, reiniciar o guardar datos.
+
+De esta forma, el comportamiento no se limita solo a lo que pasa en update(), sino también a las transiciones entre estados.
+
+Ejemplos
+
+```En AttractState::onEnter()```
+Podría cambiar el color de la partícula para indicar visualmente que está siendo atraída por el mouse.
+```c++
+void AttractState::onEnter(Particle * particle) {
+    particle->color = ofColor(255, 100, 100); // rojo suave
+}
+```
+
+Así el usuario ve un feedback inmediato de que las partículas cambiaron de comportamiento.
+
+```En StopState::onExit()```
+Podría restaurar la velocidad de la partícula a un valor aleatorio para que, cuando salga de “Stop” (y vuelva a “Normal” o “Attract”), no quede estática.
+```c++
+void StopState::onExit(Particle * particle) {
+    if (particle->velocity.lengthSquared() < 1e-4f) {
+        particle->velocity.set(ofRandom(-0.5f, 0.5f), ofRandom(-0.5f, 0.5f));
+    }
+}
+```
+
+De esta forma, al salir de “Stop”, la partícula recupera un movimiento inicial.
 
