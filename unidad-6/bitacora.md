@@ -171,7 +171,7 @@ El propósito del patrón Observer es crear una relación de dependencia entre o
 
    Con el patrón State, si hay un bug en el comportamiento de un estado, sé exactamente dónde buscar: en su clase correspondiente.
 
-   Polimorfismo limpio 🎭
+- Polimorfismo limpio 🎭
 
    Particle no necesita saber cómo se actualiza cada estado.
 
@@ -211,3 +211,373 @@ void StopState::onExit(Particle * particle) {
 
 De esta forma, al salir de “Stop”, la partícula recupera un movimiento inicial.
 
+## Actividad 05
+
+🧐🧪✍️ Reporte
+
+<img width="1021" height="764" alt="image" src="https://github.com/user-attachments/assets/2defc762-df82-480d-b47b-6a1d9cb460b3" />
+
+
+***El código fuente completo de tu proyecto openFrameworks.***
+
+**OfApp.cpp**
+
+```c++
+#include "ofApp.h"
+#include <algorithm>
+
+
+void Subject::addObserver(Observer * observer) {
+	if (!observer) return;
+	if (std::find(observers.begin(), observers.end(), observer) == observers.end()) {
+		observers.push_back(observer);
+	}
+}
+
+void Subject::removeObserver(Observer * observer) {
+	if (!observer) return;
+	observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+void Subject::notify(const std::string & event) {
+	for (Observer * observer : observers) {
+		observer->onNotify(event);
+	}
+}
+
+Particle::Particle()
+	: state(nullptr) {
+	position = ofVec2f(ofRandomWidth(), ofRandomHeight());
+	velocity = ofVec2f(ofRandom(-0.5f, 0.5f), ofRandom(-0.5f, 0.5f));
+	size = ofRandom(2.0f, 5.0f);
+	color = ofColor(255);
+
+	state = new NormalState();
+	state->onEnter(this);
+}
+
+Particle::~Particle() {
+	if (state) {
+		state->onExit(this);
+		delete state;
+		state = nullptr;
+	}
+}
+
+void Particle::setState(State * newState) {
+	if (state) {
+		state->onExit(this);
+		delete state;
+	}
+	state = newState;
+	if (state) {
+		state->onEnter(this);
+	}
+}
+
+void Particle::update() {
+	if (state) {
+		state->update(this);
+	}
+	keepInsideWindow();
+}
+
+void Particle::draw() {
+	ofPushStyle();
+	ofSetColor(color);
+	ofDrawCircle(position, size);
+	ofPopStyle();
+}
+
+void Particle::onNotify(const std::string & event) {
+	if (event == "attract") {
+		setState(new AttractState());
+	} else if (event == "repel") {
+		setState(new RepelState());
+	} else if (event == "stop") {
+		setState(new StopState());
+	} else if (event == "normal") {
+		setState(new NormalState());
+	}
+}
+
+void Particle::keepInsideWindow() {
+	const float W = static_cast<float>(ofGetWidth());
+	const float H = static_cast<float>(ofGetHeight());
+
+	if (position.x < 0.0f) {
+		position.x = 0.0f;
+		velocity.x *= -1.0f;
+	} else if (position.x > W) {
+		position.x = W;
+		velocity.x *= -1.0f;
+	}
+	if (position.y < 0.0f) {
+		position.y = 0.0f;
+		velocity.y *= -1.0f;
+	} else if (position.y > H) {
+		position.y = H;
+		velocity.y *= -1.0f;
+	}
+}
+
+
+void NormalState::onEnter(Particle * particle) {
+	particle->velocity.set(ofRandom(-0.5f, 0.5f), ofRandom(-0.5f, 0.5f));
+}
+
+void NormalState::update(Particle * particle) {
+	particle->position += particle->velocity;
+}
+
+static void steer(Particle * particle, const ofVec2f & toward, float accel, float vmax, float posScale) {
+	ofVec2f dir = toward - particle->position;
+	float len = dir.length();
+	if (len > 1e-6f) {
+		dir /= len;
+		particle->velocity += dir * accel;
+	}
+	particle->velocity.limit(vmax);
+	particle->position += particle->velocity * posScale;
+}
+
+void AttractState::update(Particle * particle) {
+	ofVec2f mouse(ofGetMouseX(), ofGetMouseY());
+	steer(particle, mouse, /*accel*/ 0.05f, /*vmax*/ 3.0f, /*posScale*/ 0.2f);
+}
+
+void RepelState::update(Particle * particle) {
+	ofVec2f mouse(ofGetMouseX(), ofGetMouseY());
+	ofVec2f away = particle->position - mouse;
+	float len = away.length();
+	if (len > 1e-6f) {
+		away /= len;
+		particle->velocity += away * 0.05f;
+	}
+	particle->velocity.limit(3.0f);
+	particle->position += particle->velocity * 0.2f;
+}
+
+void StopState::update(Particle * particle) {
+	particle->velocity *= 0.80f;
+	if (particle->velocity.lengthSquared() < 1e-4f) {
+		particle->velocity.set(0.0f, 0.0f);
+	}
+	particle->position += particle->velocity;
+}
+
+
+Particle * ParticleFactory::createParticle(const std::string & type) {
+	Particle * particle = new Particle();
+
+	if (type == "star") {
+		particle->size = ofRandom(2.0f, 4.0f);
+		particle->color = ofColor(255, 0, 0);
+	} else if (type == "shooting_star") {
+		particle->size = ofRandom(3.0f, 6.0f);
+		particle->color = ofColor(0, 255, 0);
+		particle->velocity *= 3.0f;
+	} else if (type == "planet") {
+		particle->size = ofRandom(5.0f, 8.0f);
+		particle->color = ofColor(0, 0, 255);
+	} else if (type == "comet") { // nuevo tipo
+		particle->size = ofRandom(20.0f, 40.0f);
+		particle->color = ofColor(255, 182, 193);
+		particle->velocity *= 2.0f; 
+	}
+	return particle;
+}
+
+
+ofApp::~ofApp() {
+	for (Particle * p : particles) {
+		removeObserver(p);
+		delete p;
+	}
+	particles.clear();
+}
+
+void ofApp::setup() {
+	ofBackground(0);
+	particles.reserve(100 + 5 + 10 + 3);
+
+	for (int i = 0; i < 100; ++i) {
+		Particle * p = ParticleFactory::createParticle("star");
+		particles.push_back(p);
+		addObserver(p);
+	}
+	for (int i = 0; i < 5; ++i) {
+		Particle * p = ParticleFactory::createParticle("shooting_star");
+		particles.push_back(p);
+		addObserver(p);
+	}
+	for (int i = 0; i < 10; ++i) {
+		Particle * p = ParticleFactory::createParticle("planet");
+		particles.push_back(p);
+		addObserver(p);
+	}
+	for (int i = 0; i < 3; ++i) { // cometa
+		Particle * p = ParticleFactory::createParticle("comet");
+		particles.push_back(p);
+		addObserver(p);
+	}
+}
+
+void ofApp::update() {
+	for (Particle * p : particles) {
+		p->update();
+	}
+}
+
+void ofApp::draw() {
+	for (Particle * p : particles) {
+		p->draw();
+	}
+}
+
+void ofApp::keyPressed(int key) {
+	switch (key) {
+	case 's':
+		notify("stop");
+		break;
+	case 'a':
+		notify("attract");
+		break;
+	case 'r':
+		notify("repel");
+		break;
+	case 'n':
+		notify("normal");
+		break;
+	default:
+		break;
+	}
+}
+
+
+```
+
+**OfApp.h**
+
+```c++
+#pragma once
+
+#include "ofMain.h"
+#include <string>
+#include <vector>
+
+class Observer {
+public:
+	virtual ~Observer() = default;
+	virtual void onNotify(const std::string & event) = 0;
+};
+
+class Subject {
+public:
+	void addObserver(Observer * observer);
+	void removeObserver(Observer * observer);
+
+protected:
+	void notify(const std::string & event);
+
+private:
+	std::vector<Observer *> observers;
+};
+
+class Particle;
+
+class State {
+public:
+	virtual ~State() = default;
+	virtual void update(Particle * particle) = 0;
+	virtual void onEnter(Particle * particle) { }
+	virtual void onExit(Particle * particle) { }
+};
+
+class Particle : public Observer {
+public:
+	Particle();
+	~Particle() override;
+
+	Particle(const Particle &) = delete;
+	Particle & operator=(const Particle &) = delete;
+
+	void update();
+	void draw();
+	void onNotify(const std::string & event) override;
+
+	void setState(State * newState);
+
+	ofVec2f position;
+	ofVec2f velocity;
+	float size;
+	ofColor color;
+
+private:
+	void keepInsideWindow();
+	State * state;
+};
+
+class NormalState : public State {
+public:
+	void update(Particle * particle) override;
+	void onEnter(Particle * particle) override;
+};
+
+class AttractState : public State {
+public:
+	void update(Particle * particle) override;
+};
+
+class RepelState : public State {
+public:
+	void update(Particle * particle) override;
+};
+
+class StopState : public State {
+public:
+	void update(Particle * particle) override;
+};
+
+class ParticleFactory {
+public:
+	static Particle * createParticle(const std::string & type);
+};
+
+class ofApp : public ofBaseApp, public Subject {
+public:
+	~ofApp() override;
+	void setup() override;
+	void update() override;
+	void draw() override;
+	void keyPressed(int key) override;
+
+private:
+	std::vector<Particle *> particles;
+};
+
+
+```
+
+***Explica cómo usaste el patrón Factory para esta nueva partícula.***
+
+Se usa el patrón Factory para crear el nuevo tipo de partícula “comet” (grande, rosada y rápida) sin tener que reescribir código en ofApp. Esto hace que el diseño sea modular, fácil de mantener y de extender.
+
+***Describe cómo implementaste el patrón Observer para esta nueva partícula.***
+
+El patrón Observer está implementado en el código con las clases Subject  y Observer.
+
+ofApp hereda de Subject, entonces es el emisor de eventos.
+
+Cada Particle hereda de Observer, entonces es un observador que reacciona cuando ofApp envía una notificación.
+
+***Explica cómo aplicaste el patrón State a esta nueva partícula.***
+
+El patrón State se aplicó al cometa de forma natural y sin cambios extra, porque este nuevo tipo de partícula hereda todo el sistema de estados ya existente. Lo único que cambió fue su configuración inicial, pero su comportamiento dinámico sigue controlado por las mismas clases de estado.
+
+
+## Autoevaluacion 
+
+5: realicé las 5 actividades completas y la autoevaluación.
+
+Durante esta unidad, realicé todas las actividades, lo que me permitio aprender de los elemetros tarabajados en esta, por ultimo realicé el apply que es como la reunion de todo lo que se debia aprender durante esta unidad, lo hice correctamente y ademas con las evidencias necesarias, esto tambien lo hice en las otras actividades, evidencie todo lo que era requerido y utilice la informacion suministrada para hacer todos los ejercicios de una buena manera. 
