@@ -186,3 +186,285 @@ No siempre es necesario incluir iluminación; se puede hacer un fragment shader 
 **¿Qué implica para la GPU que una aplicación tenga múltiples fuentes de iluminación?**
 
 Implica que la GPU debe realizar muchos más cálculos para cada fragmento, ya que debe considerar cómo afecta cada luz al color, brillo y sombra del objeto. Esto aumenta la carga de trabajo y el uso de recursos, haciendo que el proceso sea más exigente y consuma más rendimiento.
+
+****🧐✍️ Reporta en tu bitácora***
+
+**Escribe un resumen en tus propias palabras de lo que se necesita para dibujar un triángulo en OpenGL.**
+
+Primero se necesita tener la información de los vértices del triángulo, o sea, las coordenadas de los puntos. Esa info se manda a un VBO (Vertex Buffer Object), que es como una cajita donde se guarda toda esa data. Después hay que configurar un VAO (Vertex Array Object), que básicamente le dice a OpenGL cómo leer los datos del VBO. También hay que activar los atributos de los vértices, usando unas funciones que indican cómo está organizada esa información. Una vez hecho eso, se preparan los shaders y, cuando todo está listo, se llama a una función como glDrawArrays para que se dibuje el triángulo en pantalla.
+
+
+**Escribe un resumen en tus propias palabras de lo que necesitas para poder usar un shader en OpenGL.**
+
+Los shaders son como mini programas que corren en la GPU. Para usarlos, primero se escribe el código (por ejemplo, en GLSL), y se crean los shaders por separado: uno para los vértices y otro para los fragmentos (o píxeles). Luego se compilan y se enlazan juntos en un programa de shader. Ese programa tiene un ID único, y para activarlo se usa una función como glUseProgram(). Después de eso, todo lo que se dibuje va a pasar por ese shader, y ya se puede controlar cómo se ven las cosas en pantalla.
+
+***🧐🧪✍️ Reporta en tu bitácora***
+
+**Implementa el código anterior en tu máquina y captura pantalla del resultado. Pero antes de hacerlo trata de predecir qué va a pasar.**
+
+Creo que se van a dibujar 3 triángulos, cada uno con su propio shader. Seguro se ven diferentes, tal vez cambie la posición o algo visual, aunque no estoy muy seguro de qué hace cada shader. No parece que cambie el color, así que tal vez solo los mueve o transforma de alguna forma.
+
+<img width="396" height="392" alt="image" src="https://github.com/user-attachments/assets/43a92272-0274-4944-b0d4-2ae315008b95" />
+
+
+## Actividad 05
+
+***🧐🧪✍️ Reporta en tu bitácora***
+
+**Incluye una captura de pantalla del triángulo interactivo funcionando en tu máquina.**
+
+<img width="359" height="357" alt="image" src="https://github.com/user-attachments/assets/f72b4dfa-7d7e-4e40-bc74-77ff225d55a0" />
+
+
+<img width="359" height="359" alt="image" src="https://github.com/user-attachments/assets/6b8d2c01-c737-4bb9-860b-5dfa5f8bd454" />
+
+
+<img width="360" height="360" alt="image" src="https://github.com/user-attachments/assets/51b0c2d6-a673-4412-b632-9edba28233b8" />
+
+
+<img width="359" height="358" alt="image" src="https://github.com/user-attachments/assets/491d4e30-6dfa-47ea-bd13-bbd60c87f227" />
+
+
+**Explica el proceso de normalización de las coordenadas del mouse y cómo se relaciona con el sistema de coordenadas de OpenGL.**
+
+La posición del mouse viene en píxeles, así que se normaliza dividiendo entre el ancho y alto de la ventana. Esto convierte los valores a un rango de 0 a 1, que es más fácil de usar con el sistema de coordenadas de OpenGL, ya que trabaja con coordenadas normalizadas.
+
+**Explica el proceso de normalización a coordenadas de dispositivo (NDC) y cómo se relaciona con el sistema de coordenadas de OpenGL.**
+
+OpenGL usa un sistema de coordenadas que va de -1 a 1 en ambos ejes (X y Y). Por eso, cuando tienes coordenadas normalizadas entre 0 y 1 (como las del mouse o los vértices), debes transformarlas para que entren en ese rango.
+
+Para eso, se hace esta transformación:
+
+En X: x * 2 - 1 (convierte 0 en -1, 0.5 en 0, y 1 en 1)
+
+En Y: 1 - y * 2 (convierte 0 en 1, 0.5 en 0, y 1 en -1), además invierte el eje Y porque en pantalla Y crece hacia abajo, pero en OpenGL hacia arriba.
+
+Así, las coordenadas pasan a NDC y OpenGL puede usarlas correctamente para dibujar.
+
+## Actividad 06 APPLY
+
+***🧐🧪✍️ Reporta en tu bitácora***
+
+**Describe brevemente los cambios que realizaste en el código C++ (dónde obtienes el tiempo, cómo y dónde actualizas el uniform).**
+
+- Agregué un uniform llamado time en el fragment shader.
+- Obtengo el tiempo usando glfwGetTime() dentro del loop principal.
+- Luego, actualizo el uniform con glUniform1f(timeLocation, currentTime) en cada iteración, para enviarle el valor actual del tiempo al shader.
+
+**Pega el código modificado de tu fragment shader.**
+
+```c++
+#include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+
+
+const char* vertexShaderSrc = R"glsl(
+    #version 460 core
+    layout(location = 0) in vec3 aPos;
+    uniform vec2 offset;
+
+    void main() {
+        vec3 newPos = aPos;
+        newPos.x += offset.x;
+        newPos.y += offset.y;
+        gl_Position = vec4(newPos, 1.0);
+    }
+)glsl";
+
+const char* fragmentShaderSrc = R"glsl(
+    #version 460 core
+    out vec4 FragColor;
+    uniform float time;
+    uniform vec4 ourColor; // opcional, no se usa directamente aquí
+
+    void main() {
+        float r = (sin(time) + 1.0) / 2.0;
+        float g = (sin(time + 2.0) + 1.0) / 2.0;
+        float b = (cos(time) + 1.0) / 2.0;
+        FragColor = vec4(r, g, b, 1.0);
+    }
+)glsl";
+
+
+unsigned int VAO, VBO, shaderProg;
+
+unsigned int buildShaderProgram(const char* vSrc, const char* fSrc) {
+    int success;
+    char log[512];
+
+    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &vSrc, nullptr);
+    glCompileShader(vs);
+    glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vs, 512, nullptr, log);
+        std::cerr << "ERROR VERTEX SHADER:\n" << log << "\n";
+    }
+
+    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fs, 1, &fSrc, nullptr);
+    glCompileShader(fs);
+    glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fs, 512, nullptr, log);
+        std::cerr << "ERROR FRAGMENT SHADER:\n" << log << "\n";
+    }
+
+    unsigned int prog = glCreateProgram();
+    glAttachShader(prog, vs);
+    glAttachShader(prog, fs);
+    glLinkProgram(prog);
+    glGetProgramiv(prog, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(prog, 512, nullptr, log);
+        std::cerr << "ERROR LINKING PROGRAM:\n" << log << "\n";
+    }
+
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    return prog;
+}
+
+
+void setupTriangle() {
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+}
+
+int main() {
+    if (!glfwInit()) {
+        std::cerr << "Fallo al inicializar GLFW\n";
+        return -1;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Triángulo combinado", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Fallo al crear la ventana\n";
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Fallo al cargar GLAD\n";
+        return -1;
+    }
+
+    glfwSwapInterval(1); 
+    shaderProg = buildShaderProgram(vertexShaderSrc, fragmentShaderSrc);
+    setupTriangle();
+
+
+    glUseProgram(shaderProg);
+    int offsetLocation = glGetUniformLocation(shaderProg, "offset");
+    int timeLocation = glGetUniformLocation(shaderProg, "time");
+    int colorLocation = glGetUniformLocation(shaderProg, "ourColor"); 
+
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        processInput(window);
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        
+        float currentTime = static_cast<float>(glfwGetTime());
+        glUniform1f(timeLocation, currentTime);
+
+        
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        float x = static_cast<float>(xpos) / SCR_WIDTH;
+        float y = static_cast<float>(ypos) / SCR_HEIGHT;
+
+        
+        x = std::min(std::max(x, 0.0f), 1.0f);
+        y = std::min(std::max(y, 0.0f), 1.0f);
+
+        
+        glUniform2f(offsetLocation, x * 2.0f - 1.0f, 1.0f - y * 2.0f);
+
+        glUniform4f(colorLocation, x, y, 0.5f, 1.0f);
+
+        
+        glUseProgram(shaderProg);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glfwSwapBuffers(window);
+    }
+
+  
+    glfwMakeContextCurrent(window);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProg);
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+}
+
+```
+
+**Explica cómo usaste la función de tiempo (sin, cos, u otra) para lograr el efecto de cambio de color cíclico. ¿Qué rango de valores produce tu cálculo y cómo afecta eso al color final?**
+
+Usé sin(time) para el canal rojo y verde, y cos(time) para el azul. Estas funciones oscilan entre -1 y 1, pero como los colores en OpenGL van de 0 a 1, tuve que hacerles una transformación: les sumé 1 y luego los dividí entre 2. Así el rango final queda de 0 a 1. Esto hace que el color cambie de forma suave y cíclica, como si estuviera “respirando”. Si no se hace esa transformación, los valores negativos causarían colores raros o errores.
+
+**Incluye una captura de pantalla o UN ENLACE a un video mostrando el resultado del triángulo con color cambiante.**
+
+<img width="798" height="595" alt="image" src="https://github.com/user-attachments/assets/96b0a2ae-e7ba-4d4f-9124-7aa375a1d5c6" />
+
+
+<img width="801" height="599" alt="image" src="https://github.com/user-attachments/assets/d3bd1d72-dcc5-4afd-9f29-48006025d8c1" />
+
+
+<img width="797" height="598" alt="image" src="https://github.com/user-attachments/assets/76882a00-6733-4c35-b378-5a5c5d59b088" />
+
+
+**Reflexión: ¿Qué otros efectos visuales simples podrías lograr usando el tiempo como uniform? Piensa en la posición, el tamaño o la rotación (aunque no hemos visto rotaciones formalmente, ¡intuitivamente podrías intentarlo!). Anota al menos una idea.**
+
+Con el tiempo se pueden hacer cosas muy interesantes. Por ejemplo, animar la posición de un vértice para que parezca que el triángulo flota o se mueve en círculos. También se puede hacer que cambie de tamaño (como si pulsara) o que gire lentamente. Incluso se podría hacer que reaccione al movimiento del mouse pero con un pequeño retraso, como si colgara. Todo eso usando sin, cos y tiempo.
+
+## Evidencias
+
+### Nota propuesta: 5.0
+
+***La defensa de esa nota para cada actividad.***
+
+Hice todas las actividades correspondientes, incluyendo el apply, las reflexiones, los experimentos, las capturas de pantalla y la autoevaluación. Cada actividad fue completada de forma detallada y en orden, siguiendo las instrucciones dadas y aplicando los conceptos aprendidos sobre OpenGL, shaders, interacción con el mouse y uso del tiempo como uniform.
+
+
