@@ -254,5 +254,101 @@ Porque todos los hilos compiten por el mismo lock. Mientras uno accede al vector
 
 ## Actividad 05 APPLY
 
+🧐🧪✍️ Reporta en tu bitácora
 
-## Evidencias
+***Pega la parte clave de tu función modificada que calcula el píxel para el conjunto de Julia. Recuerda utilizar un bloque cpp.***
+
+```c++
+int computeJuliaPixel(int x, int y) {
+    // Convertir coordenadas de píxel a coordenadas complejas
+    float zx = ofMap(x, 0, imgW, -1.5f, 1.5f);
+    float zy = ofMap(y, 0, imgH, -1.5f, 1.5f);
+    int iter = 0;
+
+    // Iterar según la fórmula de Julia: z = z² + k
+    while ((zx * zx + zy * zy < 4.0f) && (iter < maxIterations)) {
+        float temp = zx * zx - zy * zy + juliaConst.x;  // parte real
+        zy = 2.0f * zx * zy + juliaConst.y;             // parte imaginaria
+        zx = temp;
+        ++iter;
+    }
+
+    return iter;
+}
+
+```
+
+***Muestra cómo mapeaste la posición del mouse a la constante k.***
+
+```c++
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y) {
+    // Mapeo de la posición del mouse a valores entre -1.5 y 1.5
+    juliaK.x = ofMap(x, 0, ofGetWidth(), -1.5f, 1.5f);   // Parte real
+    juliaK.y = ofMap(y, 0, ofGetHeight(), -1.5f, 1.5f);  // Parte imaginaria
+
+    // Indicar que se debe recalcular la imagen con el nuevo valor de k
+    needsRecalculation = true;
+}
+```
+
+
+***Describe brevemente cómo reutilizaste la estructura de hilos de la versión Mandelbrot. ¿Tuviste que cambiar mucho esa parte?***
+
+- Renombré la clase del hilo a JuliaSetThread y cambié la función interna para que usara calculateJuliaPixel() en lugar de calculateMandelbrotPixel().
+
+- Agregué la constante juliaK como parámetro, para que cada hilo pudiera acceder al valor actual de la constante compleja k.
+
+- Mantuvé el mismo sistema de creación, inicio y espera de hilos, sin modificar la lógica de sincronización o el manejo del vector threads.
+
+***¿Cómo te aseguraste de que la imagen se recalculara cuando el mouse se movía?***
+
+Para asegurarme de que la imagen del conjunto de Julia se recalculara cuando el mouse se movía, usé un sistema de bandera y actualización controlada:
+
+En la función mouseMoved(int x, int y) actualizo la constante compleja k según la posición del mouse y activo una bandera:
+
+```c++
+juliaK.x = ofMap(x, 0, ofGetWidth(), -1.5f, 1.5f);
+juliaK.y = ofMap(y, 0, ofGetHeight(), -1.5f, 1.5f);
+needsRecalculation = true;  // Marca que se debe recalcular
+```
+
+En el método update(), verifico esa bandera:
+```c++
+if (needsRecalculation && !calculating) {
+    startCalculation();      // Lanza los hilos para recalcular la imagen
+    needsRecalculation = false;
+}
+```
+
+***Incluye al menos dos capturas de pantalla que muestren diferentes fractales de Julia generados al mover el mouse en tu aplicación.***
+
+<img width="1010" height="757" alt="image" src="https://github.com/user-attachments/assets/bee7de16-2b82-45b6-889a-352f096b2813" />
+
+
+<img width="997" height="742" alt="image" src="https://github.com/user-attachments/assets/3f43ba90-1517-4cb8-a17b-346e008dba73" />
+
+
+<img width="1003" height="746" alt="image" src="https://github.com/user-attachments/assets/a6ce8531-bbad-4bfb-b5db-7f3758204bfb" />
+
+
+
+***¿Encontraste algún desafío particular al implementar la interacción o modificar el cálculo?***
+
+Lo más complicado fue entender bien la diferencia entre Mandelbrot y Julia, porque al principio solo cambié la fórmula y no me daba nada visible. Después me di cuenta de que en Julia el valor inicial de z es el píxel, y k es constante, mientras que en Mandelbrot es al revés.
+
+También me costó un poco hacer que la imagen se actualizara de forma fluida con el movimiento del mouse. Al principio recalculaba todo en cada frame y se trababa un poco, así que tuve que usar una bandera (needsRecalculation) para que solo se regenerara cuando realmente cambiaba k.
+
+En general, no fue tan difícil modificar la parte de los hilos, pero sí entender bien la lógica matemática y cómo hacer que reaccionara en tiempo real sin colapsar el programa.
+
+
+## MI NOTA ES: 5.0
+
+Mi nota debería ser 5.0, ya que cumplí todas las actividades al 100%, demostrando un dominio completo del tema y un trabajo constante y profundo en cada parte del proceso. En cada actividad no solo respondí correctamente, sino que analicé, expliqué con mis propias palabras y generé hipótesis fundamentadas sobre el funcionamiento del código y los conceptos vistos. Además, en el Apply, logré una implementación totalmente funcional, bien explicada y argumentada, mostrando que comprendí la teoría y su aplicación práctica. En conjunto, mi trabajo refleja dedicación, comprensión profunda y capacidad de análisis, lo que justifica la calificación máxima.
+
+
+***💀👻🎃 GRACIAS PROFE!!!! 💀👻🎃***
+
+
+
+
